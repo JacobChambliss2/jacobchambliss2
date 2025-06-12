@@ -27,24 +27,27 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => flickerSecond(count + 1), 90);
     } else {
       setClass(second, 'flicker');
-      setTimeout(() => bothBright(), 400);
+      setTimeout(() => bothBright(), 1100);
     }
   }
   // Step 3: Both max bright
   function bothBright() {
     setClass(first, 'flicker-strong');
     setClass(second, 'flicker-strong');
-    setTimeout(() => blowOut(), 800);
+    setTimeout(() => blowOut(), 20);
   }
   // Step 4: Both blown out
   function blowOut(count = 0) {
     if (count < 2) {
       setClass(first, count % 2 ? 'blown' : 'flicker-strong');
       setClass(second, count % 2 ? 'blown' : 'flicker-strong');
-      setTimeout(() => blowOut(count + 1), 100);
+      setTimeout(() => blowOut(count + 1), 10);
     } else {
       setClass(first, 'blown');
       setClass(second, 'blown');
+      // Play sound when the lights blow
+      const audio = new Audio('audio/exp.mp3'); 
+      audio.play();
       afterBlown();
     }
   }

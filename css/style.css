@@ -1,9 +1,6 @@
 #intro-text {
     text-align: center;
-    justify-content: center;
-    margin-top: 80px;
-    margin-left: 15%;
-    margin-right: 15%;
+    margin: 20px auto; /* even top/bottom margins and centered horizontally */
     font-size: 35px;
     color: whitesmoke;
 }
@@ -17,6 +14,8 @@ html {
     color: #fff;
     opacity: 0.2;
     text-shadow: 0 0 2px #fff, 0 0 10px #0ff, 0 0 20px #0ff;
+    margin-top: 10px; /* reduced margin */
+    margin-bottom: 10px; /* reduced margin */
 }
 
 .flicker {
@@ -50,6 +49,10 @@ html {
 
 header {
     height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 .section2 {
