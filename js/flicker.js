@@ -1,6 +1,8 @@
 // Neon flicker and blown-out sequence for two h1s
 
 document.addEventListener('DOMContentLoaded', () => {
+
+
   const h1s = document.querySelectorAll('#intro-text h1');
   if (h1s.length < 2) return;
   const [first, second] = h1s;
@@ -41,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (count < 2) {
       setClass(first, count % 2 ? 'blown' : 'flicker-strong');
       setClass(second, count % 2 ? 'blown' : 'flicker-strong');
-      setTimeout(() => blowOut(count + 1), 10);
+      setTimeout(() => blowOut(count + 1), 30);
     } else {
       setClass(first, 'blown');
       setClass(second, 'blown');
@@ -55,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const section2 = document.querySelector('.section2');
     if (section2) {
       // Scroll to the bottom of section2
+      squarefromtop();
       section2.scrollIntoView({ behavior: 'smooth', block: 'end' });
     }
   }

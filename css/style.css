@@ -35,6 +35,7 @@ html {
     opacity: 0.1;
     color: #222;
     text-shadow: none;
+    visibility: hidden; 
     transition: opacity 0.5s, color 0.5s;
 }
 
@@ -58,4 +59,9 @@ header {
 .section2 {
     height: 100vh;
     color: whitesmoke;
+}
+
+.pictureBox{
+    width:100px;
+    position:fixed;
 }
