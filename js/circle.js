@@ -1,12 +1,26 @@
 const N = 1000;
 let R = 200;
 let rchange = 0;
+let perspective = 400;
 
-function getCenter() {
-  return {
-    x: window.innerWidth / 2,
-    y: window.innerHeight / 2
-  };
+// Variable to keep track of the current step
+let stepState = 0;
+
+function getCenter(CenterIndex) {
+  if (stepState >= 3){
+    CenterIndex += 1 ;
+    return {
+      x: 200+CenterIndex*100,
+      y: window.innerHeight / 2
+    };
+  }
+  else {
+    return {
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2
+    };
+  }
+  
 }
 
 function squarefromtop() {
@@ -60,7 +74,8 @@ function moveCircle(box, index) {
       box.classList.replace("pictureBox", "pictureBox3d");
       moveSphere(box, index, angle);
       if (index === (N - 1)) {
-        colorchange();
+        // Start the sequence when the last box is processed
+        promptNextStep();
       }
     }
   }
@@ -70,15 +85,15 @@ function moveCircle(box, index) {
 
 function moveSphere(box, index, initialTheta) {
   let theta = initialTheta;
-  const perspective = 400;
 
   const phi = Math.acos(1 - 2 * (index + 0.5) / N);
   const thetaOffset = (Math.PI * (3 - Math.sqrt(5)) * 2);
   const baseTheta = index * thetaOffset;
 
   function step3d() {
+    let CenterIndex = -1;
     theta += 0.01;
-    const { x: centerX, y: centerY } = getCenter();
+    let { x: centerX, y: centerY } = getCenter(CenterIndex);
 
     const radTheta = baseTheta + theta;
     const radPhi = phi;
@@ -87,8 +102,7 @@ function moveSphere(box, index, initialTheta) {
     const y3d = R * Math.cos(radPhi);
     const z3d = R * Math.sin(radPhi) * Math.sin(radTheta);
 
-    const safeZ = Math.max(z3d, -perspective + 1);
-    const scale = Math.max(0.3, perspective / (perspective + safeZ));
+    const scale = perspective / (perspective + z3d);
     const x2d = centerX + x3d * scale;
     const y2d = centerY + y3d * scale;
 
@@ -104,9 +118,33 @@ function moveSphere(box, index, initialTheta) {
   requestAnimationFrame(step3d);
 }
 
+function promptNextStep() {
+  window.addEventListener("keydown", handleKeyPress);
+}
+
+function handleKeyPress(event) {
+  if (event.key === "Enter") {
+    // Remove the event listener to avoid multiple triggers
+    window.removeEventListener("keydown", handleKeyPress);
+
+    switch (stepState) {
+      case 0:
+        colorchange();
+        break;
+      case 1:
+        zoomout();
+        break;
+      case 2:
+        break;
+    }
+
+    stepState++;
+  }
+}
+
 function colorchange() {
   const allBoxes = document.querySelectorAll(".pictureBox3d");
-  const steps = 20;
+  const steps = 15;
   const targetR = R * 0.01;
   const delta = (targetR - R) / steps;
 
@@ -122,14 +160,11 @@ function colorchange() {
     count++;
 
     allBoxes.forEach((box) => {
-      if (count > 10) {
+      if (count > 13) {
         box.style.width = "5px";
         box.style.height = "5px";
       }
-      box.style.backgroundImage = "none";
       box.style.backgroundColor = "white";
-
-
     });
 
     requestAnimationFrame(animateRadius);
@@ -140,7 +175,7 @@ function colorchange() {
 
 function colorchange2() {
   const allBoxes = document.querySelectorAll(".pictureBox3d");
-  const steps = 20;
+  const steps = 15;
   const targetR = 200;
   const delta = (targetR - R) / steps;
 
@@ -148,7 +183,7 @@ function colorchange2() {
 
   function animateRadius() {
     if (count >= steps) {
-      colorchange2();
+      promptNextStep();
       return;
     }
 
@@ -156,14 +191,42 @@ function colorchange2() {
     count++;
 
     allBoxes.forEach((box) => {
-      if (count > 10) {
+      if (count > 1) {
         box.style.width = "50px";
         box.style.height = "50px";
       }
-      box.style.backgroundImage = "none";
       box.style.backgroundColor = 'rgb(255, 255, 0)';
-      box.style.boxShadow = `0 0 15px 5px rgba(255, 255, 74, 0.8)`; // Glow effect
+    });
 
+    requestAnimationFrame(animateRadius);
+  }
+
+  animateRadius();
+}
+
+function zoomout() {
+  const allBoxes = document.querySelectorAll(".pictureBox3d");
+  const steps = 10;
+  const targetR = 50;
+  const delta = (targetR - R) / steps;
+
+  let count = 0;
+
+  function animateRadius() {
+    if (count >= steps) {
+      stepState += 1;
+      promptNextStep();
+      return;
+    }
+
+    R += delta;
+    count++;
+
+    allBoxes.forEach((box) => {
+      if (count > 8) {
+        box.style.width = "13px";
+        box.style.height = "13px";
+      }
     });
 
     requestAnimationFrame(animateRadius);
