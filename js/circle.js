@@ -128,6 +128,8 @@ function colorchange() {
       }
       box.style.backgroundImage = "none";
       box.style.backgroundColor = "white";
+
+
     });
 
     requestAnimationFrame(animateRadius);
@@ -159,7 +161,9 @@ function colorchange2() {
         box.style.height = "50px";
       }
       box.style.backgroundImage = "none";
-      box.style.backgroundColor = "blue";
+      box.style.backgroundColor = 'rgb(255, 255, 0)';
+      box.style.boxShadow = `0 0 15px 5px rgba(255, 255, 74, 0.8)`; // Glow effect
+
     });
 
     requestAnimationFrame(animateRadius);
