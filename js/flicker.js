@@ -50,20 +50,22 @@ document.addEventListener('DOMContentLoaded', () => {
       // Play sound when the lights blow
       const audio = new Audio('audio/exp.mp3'); 
       audio.play();
-      afterBlown();
+      setTimeout(() => afterBlown(), 100);
+
     }
   }
   function afterBlown() {
     const section2 = document.querySelector('.section2');
     if (section2) {
       // Scroll to the bottom of section2
-      squarefromtop();
       section2.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      setTimeout(squarefromtop, 500);
+
     }
   }
 
   // Start sequence
   setClass(first, '');
   setClass(second, '');
-  setTimeout(() => flickerFirst(), 400);
+  setTimeout(() => flickerFirst(), 200);
 });
