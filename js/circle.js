@@ -1,44 +1,82 @@
-const N = 1000;
+const N = 175;
 let R = 200;
 let rchange = 0;
 let perspective = 400;
+let planet = 0;
+const planetCount = 9;
+const planetSpacing = window.innerWidth/10;
+let stopAnimation = false;
+  let ringsCompleted = 0;
 
-// Variable to keep track of the current step
+
+
 let stepState = 0;
 
-function getCenter(CenterIndex) {
-  if (stepState >= 3){
-    CenterIndex += 1 ;
-    return {
-      x: 200+CenterIndex*100,
-      y: window.innerHeight / 2
-    };
+const solarSystem = document.createElement('div');
+solarSystem.id = "solarSystem";
+solarSystem.style.position = "absolute";
+solarSystem.style.left = "0";
+solarSystem.style.top = "0";
+solarSystem.style.width = "100%";
+solarSystem.style.height = "100%";
+solarSystem.style.transformStyle = "preserve-3d";
+
+const section2 = document.querySelector('.section2');
+section2.appendChild(solarSystem);
+
+let currentCenter = {
+  x: window.innerWidth / 2,
+  y: window.innerHeight / 2
+};
+
+function getCenter() {
+  return currentCenter;
+}
+
+
+function animateCenterTo(newX, newY, steps) {
+  const startX = currentCenter.x;
+  const startY = currentCenter.y;
+  const dx = (newX - startX) / steps;
+  const dy = (newY - startY) / steps;
+  let count = 0;
+
+  function step() {
+    if (count < steps) {
+      currentCenter.x += dx;
+      currentCenter.y += dy;
+      count++;
+      requestAnimationFrame(step);
+    } else {
+      currentCenter.x = newX;
+      currentCenter.y = newY;
+    }
   }
-  else {
-    return {
-      x: window.innerWidth / 2,
-      y: window.innerHeight / 2
-    };
-  }
-  
+  step();
 }
 
 function squarefromtop() {
+  const frag = document.createDocumentFragment();
+  const centerX = getCenter().x;
+  const baseLeft = centerX - R - 30;
+
   for (let i = 0; i < N; i++) {
     const box = document.createElement("div");
     box.className = "pictureBox";
-    box.style.top = "0px";
-    box.style.left = (getCenter().x - R - 30) + "px";
-
-    const hue = (i * 360 / 500);
-    box.style.backgroundColor = `hsl(${hue}, 100%, 50%)`;
+    box.style.top = "-50px";
+    box.style.left = baseLeft + "px";
     box.style.width = "50px";
     box.style.height = "50px";
+    box.style.backgroundColor = `hsl(${(i * 360 / 500)}, 100%, 50%)`;
 
-    document.body.appendChild(box);
-    setTimeout(() => movePicDown(box, i), i * 10);
+    frag.appendChild(box);
+
+    setTimeout(((b, idx) => () => movePicDown(b, idx))(box, i), i * 6); // Slightly faster
   }
+
+  solarSystem.appendChild(frag);
 }
+
 
 function movePicDown(box, index) {
   let position = 0;
@@ -69,72 +107,76 @@ function moveCircle(box, index) {
     box.style.top = (centerY + y) + "px";
 
     if (angle > 90) {
+
       requestAnimationFrame(step);
     } else {
       box.classList.replace("pictureBox", "pictureBox3d");
       moveSphere(box, index, angle);
-      if (index === (N - 1)) {
-        // Start the sequence when the last box is processed
-        promptNextStep();
-      }
+
     }
   }
 
   requestAnimationFrame(step);
 }
-
 function moveSphere(box, index, initialTheta) {
   let theta = initialTheta;
-
   const phi = Math.acos(1 - 2 * (index + 0.5) / N);
   const thetaOffset = (Math.PI * (3 - Math.sqrt(5)) * 2);
   const baseTheta = index * thetaOffset;
 
   function step3d() {
-    let CenterIndex = -1;
-    theta += 0.01;
-    let { x: centerX, y: centerY } = getCenter(CenterIndex);
+    if (stopAnimation) return;
+
+    theta += 0.015; // Slightly faster but not too fast
+    const { x: centerX, y: centerY } = getCenter();
 
     const radTheta = baseTheta + theta;
-    const radPhi = phi;
-
-    const x3d = R * Math.sin(radPhi) * Math.cos(radTheta);
-    const y3d = R * Math.cos(radPhi);
-    const z3d = R * Math.sin(radPhi) * Math.sin(radTheta);
+    const x3d = R * Math.sin(phi) * Math.cos(radTheta);
+    const y3d = R * Math.cos(phi);
+    const z3d = R * Math.sin(phi) * Math.sin(radTheta);
 
     const scale = perspective / (perspective + z3d);
-    const x2d = centerX + x3d * scale;
-    const y2d = centerY + y3d * scale;
-
-    box.style.left = x2d + "px";
-    box.style.top = y2d + "px";
+    box.style.left = (centerX + x3d * scale) + "px";
+    box.style.top = (centerY + y3d * scale) + "px";
     box.style.transform = `scale(${scale})`;
     box.style.opacity = scale.toFixed(2);
     box.style.zIndex = Math.round(scale * 1000);
-
     requestAnimationFrame(step3d);
+  
   }
 
   requestAnimationFrame(step3d);
+  if(index === N-1 && stepState === 0){
+    window.addEventListener("keydown", handleKeyPress, { once: true });
+  }
 }
 
-function promptNextStep() {
-  window.addEventListener("keydown", handleKeyPress);
-}
 
-function handleKeyPress(event) {
+function handleKeyPress(event, index) {
   if (event.key === "Enter") {
     // Remove the event listener to avoid multiple triggers
     window.removeEventListener("keydown", handleKeyPress);
+    console.log(stepState)
 
     switch (stepState) {
       case 0:
-        colorchange();
+        colorchange(index);
         break;
       case 1:
         zoomout();
+        squarefromtopP2_9(0);
+        squarefromtopP2_9(1);
+        squarefromtopP2_9(2);
+        squarefromtopP2_9(3);
+        squarefromtopP2_9(4);
+        squarefromtopP2_9(5);
+        squarefromtopP2_9(6);
+        squarefromtopP2_9(7);
+        squarefromtopP2_9(8);
         break;
       case 2:
+        stopAnimation = true;
+        rotateSolarSystem();
         break;
     }
 
@@ -142,12 +184,11 @@ function handleKeyPress(event) {
   }
 }
 
-function colorchange() {
+function colorchange(index) {
   const allBoxes = document.querySelectorAll(".pictureBox3d");
   const steps = 15;
   const targetR = R * 0.01;
   const delta = (targetR - R) / steps;
-
   let count = 0;
 
   function animateRadius() {
@@ -157,20 +198,21 @@ function colorchange() {
     }
 
     R += delta;
-    count++;
-
-    allBoxes.forEach((box) => {
-      if (count > 13) {
+    if (count > 13) {
+      allBoxes.forEach((box) => {
         box.style.width = "5px";
         box.style.height = "5px";
-      }
-      box.style.backgroundColor = "white";
-    });
+        box.style.backgroundColor = "white";
+      });
+    } else {
+      allBoxes.forEach((box) => box.style.backgroundColor = "white");
+    }
 
+    count++;
     requestAnimationFrame(animateRadius);
   }
 
-  animateRadius();
+  requestAnimationFrame(animateRadius);
 }
 
 function colorchange2() {
@@ -178,31 +220,37 @@ function colorchange2() {
   const steps = 15;
   const targetR = 200;
   const delta = (targetR - R) / steps;
-
   let count = 0;
 
   function animateRadius() {
     if (count >= steps) {
-      promptNextStep();
+      window.addEventListener("keydown", handleKeyPress, { once: true });
       return;
     }
 
     R += delta;
-    count++;
 
-    allBoxes.forEach((box) => {
-      if (count > 1) {
+    allBoxes.forEach((box, i) => {
+      if (count > 5) {
         box.style.width = "50px";
         box.style.height = "50px";
       }
       box.style.backgroundColor = 'rgb(255, 255, 0)';
+      if ((i % 10) === 0) {
+        // Leave glowing logic commented in case re-added
+        // box.style.boxShadow = "0 0 40px 20px rgba(255, 255, 100, 0.9)";
+      } else {
+        box.style.boxShadow = "none";
+      }
     });
 
+    count++;
     requestAnimationFrame(animateRadius);
   }
 
-  animateRadius();
+  requestAnimationFrame(animateRadius);
 }
+
 
 function zoomout() {
   const allBoxes = document.querySelectorAll(".pictureBox3d");
@@ -212,10 +260,10 @@ function zoomout() {
 
   let count = 0;
 
+  animateCenterTo(75, window.innerHeight / 2, steps);
+  
   function animateRadius() {
     if (count >= steps) {
-      stepState += 1;
-      promptNextStep();
       return;
     }
 
@@ -224,8 +272,8 @@ function zoomout() {
 
     allBoxes.forEach((box) => {
       if (count > 8) {
-        box.style.width = "13px";
-        box.style.height = "13px";
+        box.style.width = "15px";
+        box.style.height = "15px";
       }
     });
 
@@ -233,4 +281,282 @@ function zoomout() {
   }
 
   animateRadius();
+}
+
+function squarefromtopP2_9(indexP) {
+  const frag = document.createDocumentFragment();
+  const left = ((25)+(1+indexP) * planetSpacing) + "px";
+  for (let i = 0; i < N; i++) {
+
+    const box = document.createElement("div");
+    box.className = "pictureBox";
+    box.style.top = "-50px";
+    box.style.left = left;
+    box.style.width = "15px";
+    box.style.height = "15px";
+
+    // Planet color cases (unchanged)
+    switch (indexP) {
+  // Mercury: cratered rocky surface with some bigger crater patches
+  case 0: {
+    if ((i % 31) < 5) box.style.backgroundColor = "rgb(90, 90, 90)";        // crater clusters
+    else if ((i % 13) === 0) box.style.backgroundColor = "rgb(169, 169, 169)"; // lighter plains
+    else if ((i % 7) < 3) box.style.backgroundColor = "rgb(120, 110, 100)";   // rocky patches
+    else box.style.backgroundColor = "rgb(140, 140, 140)";                   // base gray
+    break;
+  }
+
+  // Venus: thick yellowish clouds with swirling bright and dark patches
+  case 1: {
+    let modVal = i % 40;
+    if (modVal < 6) box.style.backgroundColor = "rgb(210, 190, 110)";       // bright sulfuric clusters
+    else if (modVal >= 10 && modVal < 17) box.style.backgroundColor = "rgb(170, 140, 80)"; // darker swirls
+    else if ((i + 5) % 11 === 0) box.style.backgroundColor = "rgb(220, 210, 140)";          // light clouds
+    else box.style.backgroundColor = "rgb(200, 180, 100)";                   // base yellowish
+    break;
+  }
+
+  // Earth: blue oceans, green landmasses, white clouds — clumped for continents & clouds
+  case 2: {
+    let rowLength = 15; // approximate "width" for pattern rows
+    let row = Math.floor(i / rowLength);
+    let col = i % rowLength;
+
+    // Create landmass clusters (like continents)
+    // Example: rows 3-7 and cols 5-10 mostly land, else ocean
+    let isLand = (row >= 3 && row <= 7 && col >= 5 && col <= 10);
+    
+    // Add some land outliers near edges (islands)
+    if ((row === 2 && col === 4) || (row === 8 && col === 11)) isLand = true;
+
+    // Clouds — semi-random clumps using mod
+    let isCloud = ((i + 7) % 37 < 4) || ((i + 11) % 29 < 3);
+
+    if (isCloud) {
+      box.style.backgroundColor = "rgba(255, 255, 255, 0.85)";  // white clouds with some transparency
+    } else if (isLand) {
+      if ((i % 7) < 3) box.style.backgroundColor = "rgb(34, 139, 34)"; // dark green forests
+      else box.style.backgroundColor = "rgb(144, 238, 144)";           // lighter green grasslands
+    } else {
+      box.style.backgroundColor = "rgb(30, 144, 255)";                 // deep ocean blue
+    }
+    break;
+  }
+
+  // Mars: red dusty surface with volcanic and canyon clusters
+  case 3: {
+    let cluster = i % 25;
+    if (cluster < 6) box.style.backgroundColor = "rgb(130, 50, 40)";       // volcanic dark clusters
+    else if (cluster >= 15 && cluster < 20) box.style.backgroundColor = "rgb(180, 60, 50)"; // dusty patches
+    else box.style.backgroundColor = "rgb(200, 80, 60)";                   // red plains
+    break;
+  }
+
+  // Jupiter: horizontal banded pattern with Great Red Spot clump
+  case 4: {
+    let rowLength = 20;
+    let row = Math.floor(i / rowLength);
+
+    // Great Red Spot: cluster around row 10, cols 8-12
+    let col = i % rowLength;
+    if (row === 10 && col >= 8 && col <= 12) {
+      box.style.backgroundColor = "rgb(165, 42, 42)"; // Great Red Spot (reddish)
+    } else if (row % 4 === 0) {
+      box.style.backgroundColor = "rgb(255, 248, 220)"; // cream light bands
+    } else if (row % 4 === 1) {
+      box.style.backgroundColor = "rgb(205, 133, 63)";  // brown bands
+    } else if (row % 4 === 2) {
+      box.style.backgroundColor = "rgb(244, 164, 96)";  // orange bands
+    } else {
+      box.style.backgroundColor = "rgb(222, 184, 135)"; // base sandy color
+    }
+    break;
+  }
+
+  // Saturn: pale gold bands with subtle variation
+  case 5: {
+    let rowLength = 20;
+    let row = Math.floor(i / rowLength);
+    let col = i % rowLength;
+
+    // Bands with gradual gradients
+    if (row % 6 < 2) {
+      box.style.backgroundColor = `rgb(${218 + col % 10}, ${165 + col % 10}, ${32 + col % 10})`; // gold band
+    } else if (row % 6 < 4) {
+      box.style.backgroundColor = `rgb(${255 - col % 15}, ${239 - col % 15}, ${148 - col % 15})`; // pale yellow
+    } else {
+      box.style.backgroundColor = `rgb(${184 + col % 5}, ${134 + col % 5}, ${11 + col % 5})`;     // darker bands
+    }
+    break;
+  }
+
+  // Uranus: pale blue-green fairly uniform with light patches
+  case 6: {
+    let cluster = i % 35;
+    if (cluster < 6) box.style.backgroundColor = "rgb(176, 224, 230)";    // light cyan patches
+    else if (cluster >= 20 && cluster < 26) box.style.backgroundColor = "rgb(143, 188, 143)"; // pale greenish areas
+    else box.style.backgroundColor = "rgb(175, 238, 238)";               // base pale turquoise
+    break;
+  }
+
+  // Neptune: deep blue with lighter patches
+  case 7: {
+    let cluster = i % 33;
+    if (cluster < 5) box.style.backgroundColor = "rgb(25, 25, 112)";     // deep blue spots
+    else if (cluster >= 20 && cluster < 25) box.style.backgroundColor = "rgb(72, 61, 139)";  // darker blue
+    else box.style.backgroundColor = "rgb(0, 0, 139)";                   // base dark blue
+    break;
+  }
+
+  // Pluto: icy with brownish rocky patches and some lighter ice
+  case 8: {
+    let cluster = i % 27;
+    if (cluster < 6) box.style.backgroundColor = "rgb(205, 192, 176)";   // icy plains
+    else if (cluster >= 12 && cluster < 18) box.style.backgroundColor = "rgb(139, 115, 85)";  // rocky patches
+    else if (cluster >= 22) box.style.backgroundColor = "rgb(222, 184, 135)";                 // lighter brownish
+    else box.style.backgroundColor = "rgb(188, 143, 143)";                   // muted pinkish base
+    break;
+  }
+
+  default:
+    box.style.backgroundColor = "rgb(128, 128, 128)"; // fallback gray
+ }
+
+    frag.appendChild(box);
+    setTimeout(((b, idx) => () => movePicDownP2_9(b, idx, indexP))(box, i), i * 6);
+  }
+
+solarSystem.appendChild(frag);
+}
+
+
+function movePicDownP2_9(box, index, indexP) {
+  let position = 0;
+  const maxPosition = window.innerHeight / 2;
+
+  function step() {
+    if (position < maxPosition) {
+      position += 20;
+      box.style.top = position + "px";
+      requestAnimationFrame(step);
+    } else {
+      moveCircleP2_9(box, index, indexP);
+    }
+  }
+
+  requestAnimationFrame(step);
+}
+
+
+function moveCircleP2_9(box, index, indexP) {
+  let angle = 180;
+  const radius = R;
+  const { x: centerX, y: centerY } = getCenterP2_9(indexP);
+
+  function step() {
+    angle -= 20;
+    const x = radius * Math.cos(angle * Math.PI / 180);
+    const y = radius * Math.sin(angle * Math.PI / 180);
+    box.style.left = (centerX + x) + "px";
+    box.style.top = (centerY + y) + "px";
+
+    if (angle > 90) {
+      requestAnimationFrame(step);
+    } else {
+      box.classList.replace("pictureBox", "pictureBox3d");
+      moveSphereP2_9(box, index, angle, indexP);
+    }
+  }
+
+  requestAnimationFrame(step);
+}
+
+
+function moveSphereP2_9(box, index, initialTheta, indexP) {
+  let theta = initialTheta;
+  const phi = Math.acos(1 - 2 * (index + 0.5) / N);
+  const thetaOffset = (Math.PI * (3 - Math.sqrt(5)) * 2);
+  const baseTheta = index * thetaOffset;
+
+  function step3d() {
+    if (stopAnimation) return;
+
+    theta += 0.015;
+    const { x: centerX, y: centerY } = getCenterP2_9(indexP);
+
+    const radTheta = baseTheta + theta;
+    const x3d = R * Math.sin(phi) * Math.cos(radTheta);
+    const y3d = R * Math.cos(phi);
+    const z3d = R * Math.sin(phi) * Math.sin(radTheta);
+
+    const scale = perspective / (perspective + z3d);
+    box.style.left = (centerX + x3d * scale) + "px";
+    box.style.top = (centerY + y3d * scale) + "px";
+    box.style.transform = `scale(${scale})`;
+    box.style.opacity = scale.toFixed(2);
+    box.style.zIndex = Math.round(scale * 1000);
+    requestAnimationFrame(step3d);
+  
+  }
+
+  requestAnimationFrame(step3d);
+
+  if (index === (N - 1)) {
+    ringsCompleted++;
+    if (ringsCompleted === planetCount) {
+      // All 9 rings are now in 3D motion:
+      window.addEventListener("keydown", handleKeyPress, { once: true });
+    }
+  }
+}
+
+
+function getCenterP2_9(indexP) {
+    return {
+    x: (75+(1+indexP)*planetSpacing),
+    y: window.innerHeight / 2
+    };
+}
+
+// FPS Counter
+const fpsDiv = document.createElement('div');
+fpsDiv.style.position = 'fixed';
+fpsDiv.style.top = '10px';
+fpsDiv.style.right = '20px';
+fpsDiv.style.background = 'rgba(0,0,0,0.7)';
+fpsDiv.style.color = '#fff';
+fpsDiv.style.padding = '4px 10px';
+fpsDiv.style.fontFamily = 'monospace';
+fpsDiv.style.fontSize = '16px';
+fpsDiv.style.zIndex = 9999;
+fpsDiv.innerText = 'FPS: 0';
+document.body.appendChild(fpsDiv);
+
+let lastFrame = performance.now();
+let frames = 0;
+let lastFpsUpdate = performance.now();
+
+function updateFps() {
+  frames++;
+  const now = performance.now();
+  if (now - lastFpsUpdate > 500) {
+    const fps = Math.round((frames * 1000) / (now - lastFpsUpdate));
+    fpsDiv.innerText = `FPS: ${fps}`;
+    frames = 0;
+    lastFpsUpdate = now;
+  }
+  requestAnimationFrame(updateFps);
+}
+updateFps();
+
+let rotateY = 0;
+let rotateX = 0;
+function rotateSolarSystem() {
+  solarSystem.style.transform = 
+    `rotateY(${angleY}deg) rotateX(${angleX}deg)`;
+  rotateY += 0.3;
+  rotateX += 0.1;
+  if (stopAnimation !== "true") {
+    requestAnimationFrame(rotateSolarSystem);
+  }
 }

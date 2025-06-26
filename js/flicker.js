@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (section2) {
       // Scroll to the bottom of section2
       section2.scrollIntoView({ behavior: 'smooth', block: 'end' });
-      setTimeout(squarefromtop, 500);
+      setTimeout(squarefromtop(), 1000);
 
     }
   }

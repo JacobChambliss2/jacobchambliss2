@@ -1,96 +1,90 @@
-#intro-text {
-    text-align: center;
-    margin: 20px auto; /* even top/bottom margins and centered horizontally */
-    font-size: 35px;
-    color: whitesmoke;
-}
-html {
-    background-color: black;
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  overflow: hidden;
 }
 
-/* Flicker and blown-out neon text effect */
+#intro-text {
+  text-align: center;
+  margin: 20px auto;
+  font-size: 35px;
+  color: whitesmoke;
+}
+
 #intro-text h1 {
-    transition: color 0.2s, text-shadow 0.2s, opacity 0.2s;
-    color: #fff;
-    opacity: 0.2;
-    text-shadow: 0 0 2px #fff, 0 0 10px #0ff, 0 0 20px #0ff;
-    margin-top: 10px; /* reduced margin */
-    margin-bottom: 10px; /* reduced margin */
+  transition: color 0.2s, text-shadow 0.2s, opacity 0.2s;
+  color: #fff;
+  opacity: 0.2;
+  text-shadow: 0 0 2px #fff, 0 0 10px #0ff, 0 0 20px #0ff;
+  margin: 10px 0;
 }
 
 .flicker {
-    animation: flickerAnim 0.12s infinite alternate;
-    opacity: 1;
-    color: #fff;
-    text-shadow: 0 0 8px #fff, 0 0 24px #0ff, 0 0 48px #0ff;
+  animation: flickerAnim 0.12s infinite alternate;
+  opacity: 1;
+  text-shadow: 0 0 8px #fff, 0 0 24px #0ff, 0 0 48px #0ff;
 }
 
 .flicker-strong {
-    opacity: 1;
-    color: #fff;
-    text-shadow: 0 0 24px #fff, 0 0 64px #0ff, 0 0 128px #0ff;
+  opacity: 1;
+  text-shadow: 0 0 24px #fff, 0 0 64px #0ff, 0 0 128px #0ff;
 }
 
 .blown {
-    opacity: 0.1;
-    color: #222;
-    text-shadow: none;
-    visibility: hidden; 
-    transition: opacity 0.5s, color 0.5s;
+  opacity: 0.1;
+  color: #222;
+  visibility: hidden;
+  transition: opacity 0.5s, color 0.5s;
 }
 
 @keyframes flickerAnim {
-    0% { opacity: 0.7; }
-    20% { opacity: 1; }
-    40% { opacity: 0.6; }
-    60% { opacity: 1; }
-    80% { opacity: 0.8; }
-    100% { opacity: 1; }
+  0%   { opacity: 0.7; }
+  20%  { opacity: 1;   }
+  40%  { opacity: 0.6; }
+  60%  { opacity: 1;   }
+  80%  { opacity: 0.8; }
+  100% { opacity: 1;   }
 }
 
 header {
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
+
 
 .section2 {
-    height: 100vh;
-    color: whitesmoke;
-}
-
-
-
-#sphereContainer {
   position: relative;
-  width: 100vw;
   height: 100vh;
+  overflow: hidden;
+  background: black;
+
   perspective: 1000px;
-  overflow: visible;
+  perspective-origin: 50% 50%;
 }
 
 
-.pictureBox {
-  position: fixed;
-  width: 50px;
-  height: 50px;
+#solarSystem {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
   pointer-events: none;
-  transition: transform 0.1s linear;
 }
 
+.pictureBox,
 .pictureBox3d {
-  position: fixed;
-  width: 50px;
+  position: absolute;       /* live inside #solarSystem */
+  width: 50px;              /* default; JS may override */
   height: 50px;
   transform-origin: center center;
   pointer-events: none;
   transition: transform 0.1s linear;
-}
-
-
-body {
-  margin: 0;
-  overflow: hidden; 
 }
