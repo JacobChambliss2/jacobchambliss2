@@ -1,4 +1,4 @@
-const N = 175;
+N = 200;
 let R = 200;
 let rchange = 0;
 let perspective = 400;
@@ -272,8 +272,8 @@ function zoomout() {
 
     allBoxes.forEach((box) => {
       if (count > 8) {
-        box.style.width = "15px";
-        box.style.height = "15px";
+        box.style.width = "20px";
+        box.style.height = "20px";
       }
     });
 
@@ -292,8 +292,8 @@ function squarefromtopP2_9(indexP) {
     box.className = "pictureBox";
     box.style.top = "-50px";
     box.style.left = left;
-    box.style.width = "15px";
-    box.style.height = "15px";
+    box.style.width = "20px";
+    box.style.height = "20px";
 
     // Planet color cases (unchanged)
     switch (indexP) {
@@ -335,7 +335,7 @@ function squarefromtopP2_9(indexP) {
     if (isCloud) {
       box.style.backgroundColor = "rgba(255, 255, 255, 0.85)";  // white clouds with some transparency
     } else if (isLand) {
-      if ((i % 7) < 3) box.style.backgroundColor = "rgb(34, 139, 34)"; // dark green forests
+      if ((i % 7) < 5) box.style.backgroundColor = "rgb(34, 139, 34)"; // dark green forests
       else box.style.backgroundColor = "rgb(144, 238, 144)";           // lighter green grasslands
     } else {
       box.style.backgroundColor = "rgb(30, 144, 255)";                 // deep ocean blue
@@ -553,7 +553,7 @@ let rotateY = 0;
 let rotateX = 0;
 function rotateSolarSystem() {
   solarSystem.style.transform = 
-    `rotateY(${angleY}deg) rotateX(${angleX}deg)`;
+    `rotateY(${rotateY.toFixed(1)}deg) rotateX(${rotateX.toFixed(1)}deg)`;
   rotateY += 0.3;
   rotateX += 0.1;
   if (stopAnimation !== "true") {
