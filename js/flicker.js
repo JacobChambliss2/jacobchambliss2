@@ -1,5 +1,3 @@
-// Neon flicker and blown-out sequence for two h1s
-
 document.addEventListener('DOMContentLoaded', () => {
 
 

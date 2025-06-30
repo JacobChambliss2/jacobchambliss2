@@ -70,10 +70,10 @@ html, body {
   top: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none; /* allows key events through */
+  pointer-events: none;
 }
 
-.pictureBox, .pictureBox3d {
+.pictureBox, .pictureBox3d, .pictureBox3dSun,.pictureBox3dMercury, .pictureBox3dVenus,.pictureBox3dEarth,.pictureBox3dMars,.pictureBox3dJupiter,.pictureBox3dSaturn,.pictureBox3dUranus, .pictureBox3dNeptune, .pictureBox3dPluto {
   position: absolute;
   width: 50px;
   height: 50px;
@@ -81,4 +81,10 @@ html, body {
   pointer-events: none;
   transition: transform 0.1s linear;
   will-change: transform, left, top;
+}
+
+p {
+  color: white;
+  background-color: black;
+  padding: 10px;
 }

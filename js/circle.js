@@ -1,4 +1,4 @@
-N = 200;
+N = 250;
 let R = 200;
 let rchange = 0;
 let perspective = 400;
@@ -6,10 +6,7 @@ let planet = 0;
 const planetCount = 9;
 const planetSpacing = window.innerWidth/10;
 let stopAnimation = false;
-  let ringsCompleted = 0;
-
-
-
+let ringsCompleted = 0;
 let stepState = 0;
 
 const solarSystem = document.createElement('div');
@@ -60,7 +57,7 @@ function squarefromtop() {
   const centerX = getCenter().x;
   const baseLeft = centerX - R - 30;
 
-  for (let i = 0; i < N; i++) {
+  for (let i = 0; i < (N); i++) {
     const box = document.createElement("div");
     box.className = "pictureBox";
     box.style.top = "-50px";
@@ -110,9 +107,8 @@ function moveCircle(box, index) {
 
       requestAnimationFrame(step);
     } else {
-      box.classList.replace("pictureBox", "pictureBox3d");
+      box.classList.replace("pictureBox", "pictureBox3dSun");
       moveSphere(box, index, angle);
-
     }
   }
 
@@ -176,8 +172,10 @@ function handleKeyPress(event, index) {
         break;
       case 2:
         stopAnimation = true;
-        rotateSolarSystem();
+        ZoomP1();
+        
         break;
+
     }
 
     stepState++;
@@ -185,7 +183,7 @@ function handleKeyPress(event, index) {
 }
 
 function colorchange(index) {
-  const allBoxes = document.querySelectorAll(".pictureBox3d");
+  const allBoxes = document.querySelectorAll(".pictureBox3dSun");
   const steps = 15;
   const targetR = R * 0.01;
   const delta = (targetR - R) / steps;
@@ -216,7 +214,7 @@ function colorchange(index) {
 }
 
 function colorchange2() {
-  const allBoxes = document.querySelectorAll(".pictureBox3d");
+  const allBoxes = document.querySelectorAll(".pictureBox3dSun");
   const steps = 15;
   const targetR = 200;
   const delta = (targetR - R) / steps;
@@ -238,7 +236,7 @@ function colorchange2() {
       box.style.backgroundColor = 'rgb(255, 255, 0)';
       if ((i % 10) === 0) {
         // Leave glowing logic commented in case re-added
-        // box.style.boxShadow = "0 0 40px 20px rgba(255, 255, 100, 0.9)";
+         box.style.boxShadow = "0 0 40px 20px rgba(255, 255, 100, 0.9)";
       } else {
         box.style.boxShadow = "none";
       }
@@ -253,7 +251,7 @@ function colorchange2() {
 
 
 function zoomout() {
-  const allBoxes = document.querySelectorAll(".pictureBox3d");
+  const allBoxes = document.querySelectorAll(".pictureBox3dSun");
   const steps = 10;
   const targetR = 50;
   const delta = (targetR - R) / steps;
@@ -286,10 +284,10 @@ function zoomout() {
 function squarefromtopP2_9(indexP) {
   const frag = document.createDocumentFragment();
   const left = ((25)+(1+indexP) * planetSpacing) + "px";
+  N = 150;
   for (let i = 0; i < N; i++) {
 
     const box = document.createElement("div");
-    box.className = "pictureBox";
     box.style.top = "-50px";
     box.style.left = left;
     box.style.width = "20px";
@@ -299,6 +297,7 @@ function squarefromtopP2_9(indexP) {
     switch (indexP) {
   // Mercury: cratered rocky surface with some bigger crater patches
   case 0: {
+    box.classList = "pictureBox3dMercury";
     if ((i % 31) < 5) box.style.backgroundColor = "rgb(90, 90, 90)";        // crater clusters
     else if ((i % 13) === 0) box.style.backgroundColor = "rgb(169, 169, 169)"; // lighter plains
     else if ((i % 7) < 3) box.style.backgroundColor = "rgb(120, 110, 100)";   // rocky patches
@@ -308,6 +307,7 @@ function squarefromtopP2_9(indexP) {
 
   // Venus: thick yellowish clouds with swirling bright and dark patches
   case 1: {
+    box.classList = "pictureBox3dVenus";
     let modVal = i % 40;
     if (modVal < 6) box.style.backgroundColor = "rgb(210, 190, 110)";       // bright sulfuric clusters
     else if (modVal >= 10 && modVal < 17) box.style.backgroundColor = "rgb(170, 140, 80)"; // darker swirls
@@ -318,6 +318,7 @@ function squarefromtopP2_9(indexP) {
 
   // Earth: blue oceans, green landmasses, white clouds — clumped for continents & clouds
   case 2: {
+    box.classList = "pictureBox3dEarth";
     let rowLength = 15; // approximate "width" for pattern rows
     let row = Math.floor(i / rowLength);
     let col = i % rowLength;
@@ -345,6 +346,8 @@ function squarefromtopP2_9(indexP) {
 
   // Mars: red dusty surface with volcanic and canyon clusters
   case 3: {
+    box.classList = "pictureBox3dMars";
+
     let cluster = i % 25;
     if (cluster < 6) box.style.backgroundColor = "rgb(130, 50, 40)";       // volcanic dark clusters
     else if (cluster >= 15 && cluster < 20) box.style.backgroundColor = "rgb(180, 60, 50)"; // dusty patches
@@ -354,6 +357,8 @@ function squarefromtopP2_9(indexP) {
 
   // Jupiter: horizontal banded pattern with Great Red Spot clump
   case 4: {
+    box.classList = "pictureBox3dJupiter";
+
     let rowLength = 20;
     let row = Math.floor(i / rowLength);
 
@@ -375,6 +380,8 @@ function squarefromtopP2_9(indexP) {
 
   // Saturn: pale gold bands with subtle variation
   case 5: {
+    box.classList = "pictureBox3dSaturn";
+
     let rowLength = 20;
     let row = Math.floor(i / rowLength);
     let col = i % rowLength;
@@ -392,6 +399,8 @@ function squarefromtopP2_9(indexP) {
 
   // Uranus: pale blue-green fairly uniform with light patches
   case 6: {
+    box.classList = "pictureBox3dUranus";
+
     let cluster = i % 35;
     if (cluster < 6) box.style.backgroundColor = "rgb(176, 224, 230)";    // light cyan patches
     else if (cluster >= 20 && cluster < 26) box.style.backgroundColor = "rgb(143, 188, 143)"; // pale greenish areas
@@ -401,6 +410,8 @@ function squarefromtopP2_9(indexP) {
 
   // Neptune: deep blue with lighter patches
   case 7: {
+    box.classList = "pictureBox3dNeptune";
+
     let cluster = i % 33;
     if (cluster < 5) box.style.backgroundColor = "rgb(25, 25, 112)";     // deep blue spots
     else if (cluster >= 20 && cluster < 25) box.style.backgroundColor = "rgb(72, 61, 139)";  // darker blue
@@ -410,6 +421,8 @@ function squarefromtopP2_9(indexP) {
 
   // Pluto: icy with brownish rocky patches and some lighter ice
   case 8: {
+    box.classList = "pictureBox3dPluto";
+
     let cluster = i % 27;
     if (cluster < 6) box.style.backgroundColor = "rgb(205, 192, 176)";   // icy plains
     else if (cluster >= 12 && cluster < 18) box.style.backgroundColor = "rgb(139, 115, 85)";  // rocky patches
@@ -463,7 +476,6 @@ function moveCircleP2_9(box, index, indexP) {
     if (angle > 90) {
       requestAnimationFrame(step);
     } else {
-      box.classList.replace("pictureBox", "pictureBox3d");
       moveSphereP2_9(box, index, angle, indexP);
     }
   }
@@ -510,7 +522,6 @@ function moveSphereP2_9(box, index, initialTheta, indexP) {
   }
 }
 
-
 function getCenterP2_9(indexP) {
     return {
     x: (75+(1+indexP)*planetSpacing),
@@ -549,14 +560,3 @@ function updateFps() {
 }
 updateFps();
 
-let rotateY = 0;
-let rotateX = 0;
-function rotateSolarSystem() {
-  solarSystem.style.transform = 
-    `rotateY(${rotateY.toFixed(1)}deg) rotateX(${rotateX.toFixed(1)}deg)`;
-  rotateY += 0.3;
-  rotateX += 0.1;
-  if (stopAnimation !== "true") {
-    requestAnimationFrame(rotateSolarSystem);
-  }
-}
