@@ -502,8 +502,8 @@ case 6: {
 
   // Example links — replace these with your actual project URLs
   const projectLinks = [
-    "Choose-Adventure-3/index.html",
-    "Quiz-1/index.html",
+    "Choose-Adventure/index.html",
+    "Quiz/index.html",
 
   ];
 
@@ -551,8 +551,8 @@ case 6: {
 
       // Example links — replace these with your actual project URLs
       const projectLinks = [
-        "Jacob_Unit-2-Project-1/index.html",
-        "Mowing-1/index.html"
+        "Jacob_Unit-2-Project/index.html",
+        "Mowing/index.html"
       ];
 
       imageSources.forEach((src, index) => {
