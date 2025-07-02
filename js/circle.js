@@ -1,3 +1,24 @@
+/* 
+This file first declares a global div called solarsystem to hold the planets it and 
+center text in 3-d space inside the planet
+
+The first function spawns squares from the top of random color, moves them down
+into a sphere shape using the golden ratio to evenly space them
+
+This sphere is then shrunk and regrown to reveal a sun coloring
+
+Using the enter key moves the program along and moves the sun down to the left
+spawns in 9 planets just as the sun did, and a rotatesphere function makes all
+of these planets rotate like a planet
+
+These planets squares are then pushed towards the middle until the last square reaches.
+
+To color these planets like the planets of the solar system, I use mod opperators to randomly
+but paternally color different sections of the planets based on their own real life looks
+as well as using vertical positioning to create long bands of color
+
+once the last square reaches the center, a function in info.js is called
+*/
 N = 250;
 let R = 200;
 let rchange = 0;
@@ -68,7 +89,7 @@ function squarefromtop() {
 
     frag.appendChild(box);
 
-    setTimeout(((b, idx) => () => movePicDown(b, idx))(box, i), i * 6); // Slightly faster
+    setTimeout(((b, idx) => () => movePicDown(b, idx))(box, i), i * 6); 
   }
 
   solarSystem.appendChild(frag);
@@ -123,7 +144,7 @@ function moveSphere(box, index, initialTheta) {
   function step3d() {
     if (stopAnimation) return;
 
-    theta += 0.015; // Slightly faster but not too fast
+    theta += 0.015;
     const { x: centerX, y: centerY } = getCenter();
 
     const radTheta = baseTheta + theta;
@@ -152,7 +173,6 @@ function handleKeyPress(event, index) {
   if (event.key === "Enter") {
     // Remove the event listener to avoid multiple triggers
     window.removeEventListener("keydown", handleKeyPress);
-    console.log(stepState)
 
     switch (stepState) {
       case 0:
@@ -235,7 +255,6 @@ function colorchange2() {
       }
       box.style.backgroundColor = 'rgb(255, 255, 0)';
       if ((i % 10) === 0) {
-        // Leave glowing logic commented in case re-added
          box.style.boxShadow = "0 0 40px 20px rgba(255, 255, 100, 0.9)";
       } else {
         box.style.boxShadow = "none";
@@ -293,7 +312,6 @@ function squarefromtopP2_9(indexP) {
     box.style.width = "20px";
     box.style.height = "20px";
 
-    // Planet color cases (unchanged)
     switch (indexP) {
   // Mercury: cratered rocky surface with some bigger crater patches
   case 0: {

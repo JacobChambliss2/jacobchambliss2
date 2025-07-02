@@ -1,5 +1,17 @@
-document.addEventListener('DOMContentLoaded', () => {
+/* 
+This file starts at as the webpage loads and flickers the intro text in order
+to recreate the effect of a neon sign.
 
+Css classes that represent high brightness and low brightness are transitioned between
+in order to create this effect.
+
+In the end, the text slowely gets brighter over time, suddenly "blows", and then scrolls
+to the next page
+
+The function runfromtop() in circle.js is ran at the end
+
+*/
+document.addEventListener('DOMContentLoaded', () => {
 
   const h1s = document.querySelectorAll('#intro-text h1');
   if (h1s.length < 2) return;
@@ -46,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
       setClass(first, 'blown');
       setClass(second, 'blown');
       // Play sound when the lights blow
-      const audio = new Audio('audio/exp.mp3'); 
+      const audio = new Audio('audio/NeonClip2.mp4'); 
       audio.play();
       setTimeout(() => afterBlown(), 100);
 

@@ -1,9 +1,33 @@
+/*
+
+All squares now combine into one array, and a new sphere is spawned using all of them
+
+The new sphere now transitions between colorings of the planets and going inside of them using the enter key
+
+Text is created and centered as well as image div's inside the planet in order to only show them whenever inside
+
+The majority of content is displayed here, each planet showing either a section of text or pictures
+
+The function, using mod operators for the count of what planet is currently shown, infinitly goes inside and back 
+out showing all planets in order 
+
+This file contains all content on the page and an updated coloring for planets based on the increase of squares
+*/
 let indexPlanet = 0;
 let stepState2 = 0;
 let finishedBoxes = [];
 let planetR = 200;
 
+let paragraph = document.createElement('p');
+let header = document.createElement('h1');    
 
+const enterPrompt = document.createElement("div");
+enterPrompt.id = "enterPrompt";
+enterPrompt.textContent = "Press ENTER to continue";
+document.getElementById("solarSystem").appendChild(enterPrompt);
+
+document.getElementById("solarSystem").appendChild(header);
+document.getElementById("solarSystem").appendChild(paragraph);
 
 function ZoomP1() {
   const R = 20;
@@ -30,7 +54,7 @@ function ZoomP1() {
   const centerY = window.innerHeight / 2;
 
   allBoxes.forEach((box, index) => {
-    // Ensure position is absolute for movement
+
     box.style.position = "absolute";
 
     if (!box.style.left || !box.style.top) {
@@ -39,7 +63,6 @@ function ZoomP1() {
       box.style.top = `${rect.top}px`;
     }
 
-    // Set consistent size before animating
     box.style.width = `${R}px`;
     box.style.height = `${R}px`;
 
@@ -70,14 +93,10 @@ function ZoomP1() {
         count++;
         requestAnimationFrame(step);
       } else {
+        
         changeColor3(box, index)
         moveSphere3(box, index, N);
         finishedBoxes.push({ box, index });
-
-        if (index===(N-1)){
-            console.log(index)
-            window.addEventListener("keydown", handleKeyPress2);
-        }
 
       }
     }
@@ -85,13 +104,14 @@ function ZoomP1() {
     step();
   }
 
-  function changeColor3(box,i){
-    console.log(indexPlanet);
+function changeColor3(box,i){
+  box.style.boxShadow = "none";
+
 switch (indexPlanet) {
   case 0:{
-
     box.style.backgroundColor = "rgb(255, 255, 0)";
-      if ((i % 10) === 0) {
+      if ((i % 30) === 0) {
+        console.log("what")
          box.style.boxShadow = "0 0 40px 20px rgba(255, 255, 100, 0.9)";
       } else {
         box.style.boxShadow = "none";
@@ -100,7 +120,6 @@ switch (indexPlanet) {
   }
   // Mercury: cratered rocky surface with bigger crater patches
   case 1: {
-    box.style.boxShadow = "none";
 
     if ((i % 185) < 30) box.style.backgroundColor = "rgb(90, 90, 90)";        // crater clusters (scaled up)
     else if ((i % 78) === 0) box.style.backgroundColor = "rgb(169, 169, 169)"; // lighter plains
@@ -232,12 +251,11 @@ switch (indexPlanet) {
 }
 
     window.addEventListener("keydown", handleKeyPress2);
-    console.log("failed")
+
     
 }
 
 function moveSphere3(box, index, total) {
-    box.style.boxShadow = "none";
     const thetaOffset = (Math.PI * (3 - Math.sqrt(5))) * 2;
     const baseTheta = index * thetaOffset;
     const phi = Math.acos(1 - 2 * (index + 0.5) / total);
@@ -281,24 +299,27 @@ let entercount = 0;
 
 function handleKeyPress2(event) {
   if (event.key === "Enter") {
-    indexPlanet = (indexPlanet + 1) % 10;
+
     if((entercount%2)===1){
+        indexPlanet = (indexPlanet + 1) % 10;
+        console.log(indexPlanet)
+
         finishedBoxes.forEach(({ box, index }) => {
             changeColor3(box, index);
         });
     }
     finishedBoxes.forEach(({ box, index }) => {
-            if(box.style.width != "60px"){
-                box.style.width = "60px";
-                box.style.height = "60px";
+        if (parseInt(box.style.width) !== 70){
+                box.style.width = "70px";
+                box.style.height = "70px";
             }
             else{
                 box.style.width = "25px";
                 box.style.height = "25px";
             }
         });
-    showtext(entercount)
-    entercount+=1;
+    showtext(entercount);
+    entercount =(entercount+1)%20;
   }
 }
 
@@ -311,28 +332,358 @@ function showtext(entercount){
     else{
         planetR = 200;
     }
-    switch (entercount) {
-        case 0:
-            showtext(entercount)
-            const paragraph = document.createElement('p');
-            paragraph.textContent = "This is a paragraph added with JavaScript.";
 
-        case 1: 
-            showtext(entercount)
-        case 2: 
-            showtext(entercount)
-        case 3: 
-            showtext(entercount)
-        case 4: 
-            showtext(entercount)
-        case 5: 
-            showtext(entercount)
-        case 6: 
-            showtext(entercount)   
-        case 7: 
-            showtext(entercount)  
-        case 8: 
-            showtext(entercount)    
+switch (entercount) {
+    case 0: {
+      header.hidden = false;
+      paragraph.hidden = false;
+        header.textContent = "About Me"
+        header.style.color = "#FFD700";
+
+        paragraph.textContent = "I am a senior at Castle Highschool with a passion for coding and ping-pong.";
+        paragraph.style.color = "#FFD700"; // Gold text
+        paragraph.style.backgroundColor = "rgba(0, 0, 0, 0.7)"; // Semi-transparent black bg
+
         break;
     }
+    case 1: {
+      header.hidden = true;
+      paragraph.hidden = true;
+
+      break;
+    }
+    case 2: {    
+      header.hidden = false;
+      paragraph.hidden = true;
+      header.innerHTML = "Action Shots:";
+      header.style.top = "10%";
+
+      paragraph.innerHTML = "";
+      
+      header.style.color = "#333333"; // Dark gray text
+      header.style.padding = "3% 3%";
+      header.style.backgroundColor = "rgba(255, 255, 255, 0.8)"; // Semi-transparent white bg
+
+      const imageDiv = document.createElement("div");
+      imageDiv.className = "imageContainer";
+      imageDiv.id = "actionShots";
+      const imageSources = [
+        "images/Ping.png",
+        "images/help.png",
+        "images/working.png",
+        "images/Pong.png"
+      ];
+      imageSources.forEach(src => {
+        const img = document.createElement("img");
+        img.src = src;
+        imageDiv.appendChild(img);
+      });
+      document.getElementById("solarSystem").appendChild(imageDiv);
+      break;
+    }
+    case 3: {
+      header.hidden = true;
+      paragraph.hidden = true;
+      const oldImageDiv = document.getElementById("actionShots");
+      if (oldImageDiv) oldImageDiv.remove();
+      break;
+    }
+    case 4: {
+      const oldSkills = document.getElementById("skills");
+      if (oldSkills) oldSkills.remove();
+
+      header.hidden = false;
+      paragraph.hidden = true;
+      header.style.backgroundColor = "rgba(60, 40, 10, 0.7)";
+      header.textContent = "Technical Skills";
+      header.style.color = "#FFF5CC";
+
+      const imageDiv = document.createElement("div");
+      imageDiv.className = "imageCircleContainer";
+      imageDiv.id = "skills";
+
+      const canvas = document.createElement("canvas");
+      canvas.width = 575;
+      canvas.height = 575;
+      canvas.className = "skillLines";
+      canvas.style.position = "absolute";
+      canvas.style.top = "0";
+      canvas.style.left = "0";
+      imageDiv.style.position = "relative"; // Needed to align canvas and images
+
+      imageDiv.appendChild(canvas);
+
+      const imageSources = [
+        "images/csharp.png",
+        "images/css.png",
+        "images/python.png",
+        "images/java.png",
+        "images/js.png"
+      ];
+
+      const iconElements = [];
+      const radius = 210;
+
+      imageSources.forEach((src, index, arr) => {
+        const img = document.createElement("img");
+        img.src = src;
+        img.className = "circleSkillIcon";
+
+        const angle = (index / arr.length) * 2 * Math.PI;
+        const x = Math.cos(angle) * radius;
+        const y = Math.sin(angle) * radius;
+
+        img.style.position = "absolute";
+        img.style.left = `calc(50% + ${x}px - 75px)`;
+        img.style.top = `calc(50% + ${y}px - 75px)`;
+
+        imageDiv.appendChild(img);
+        iconElements.push(img);
+      });
+
+      document.getElementById("solarSystem").appendChild(imageDiv);
+
+      // Wait until images are rendered
+      requestAnimationFrame(() => {
+        const iconPositions = [];
+        const canvasRect = canvas.getBoundingClientRect();
+
+        iconElements.forEach((img) => {
+          const rect = img.getBoundingClientRect();
+          const centerX = rect.left + rect.width / 2 - canvasRect.left;
+          const centerY = rect.top + rect.height / 2 - canvasRect.top;
+          iconPositions.push({ x: centerX, y: centerY });
+        });
+
+        const ctx = canvas.getContext("2d");
+        ctx.strokeStyle = "rgba(255, 255, 255, 0.6)";
+        ctx.lineWidth = 5;
+
+        ctx.beginPath();
+        let i = 0;
+        const visited = new Set();
+        ctx.moveTo(iconPositions[i].x, iconPositions[i].y);
+        do {
+          i = (i + 2) % iconPositions.length;
+          ctx.lineTo(iconPositions[i].x, iconPositions[i].y);
+          visited.add(i);
+        } while (!visited.has((i + 2) % iconPositions.length));
+        ctx.closePath();
+        ctx.stroke();
+      });
+
+      break;
+    }
+
+    case 5: {
+      header.hidden = true;
+      paragraph.hidden = true;
+      const oldImageDiv2 = document.getElementById("skills");
+      if (oldImageDiv2) oldImageDiv2.remove();
+      break;
+    }
+case 6: {
+  header.hidden = false;
+  paragraph.hidden = false; 
+  header.style.backgroundColor = "rgba(0, 0, 50, 0.7)"; 
+
+  header.textContent = "Projects";
+  header.style.color = "#A7D8FF"; 
+
+  const imageDiv = document.createElement("div");
+  imageDiv.className = "container5";  // renamed from imageContainer
+  imageDiv.id = "projects";
+
+  const imageSources = [
+    "images/escape.png",
+    "images/clash.png"
+
+  ];
+
+  // Example links — replace these with your actual project URLs
+  const projectLinks = [
+    "Choose-Adventure-3/index.html",
+    "Quiz-1/index.html",
+
+  ];
+
+  imageSources.forEach((src, index) => {
+    const link = document.createElement("a");
+    link.href = projectLinks[index];
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    link.className = "projectLink";
+
+    const img = document.createElement("img");
+    img.src = src;
+    img.alt = `Screenshot of project ${index + 1}`;
+
+    link.appendChild(img);
+    imageDiv.appendChild(link);
+  });
+
+  document.getElementById("solarSystem").appendChild(imageDiv);
+  break;
+}
+
+    case 7: {
+      header.hidden = true;
+      paragraph.hidden = true;
+      const oldImageDiv2 = document.getElementById("projects");
+      if (oldImageDiv2) oldImageDiv2.remove();
+      break;
+    }
+    case 8: {
+      header.hidden = false;
+      paragraph.hidden = false; 
+      header.style.backgroundColor = "rgba(80, 0, 0, 0.7)"; // Dark red transparent bg
+      header.textContent = "Projects";
+      header.style.color = "##FFFDD0"; 
+      
+      const imageDiv = document.createElement("div");
+      imageDiv.className = "container5";  // renamed from imageContainer
+      imageDiv.id = "projects";
+
+      const imageSources = [
+        "images/mower.png",
+        "images/race.png"
+      ];
+
+      // Example links — replace these with your actual project URLs
+      const projectLinks = [
+        "Jacob_Unit-2-Project-1/index.html",
+        "Mowing-1/index.html"
+      ];
+
+      imageSources.forEach((src, index) => {
+        const link = document.createElement("a");
+        link.href = projectLinks[index];
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.className = "projectLink";
+
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = `Screenshot of project ${index + 1}`;
+
+        link.appendChild(img);
+        imageDiv.appendChild(link);
+      });
+
+      document.getElementById("solarSystem").appendChild(imageDiv);
+        break;
+    }
+    case 9: {
+      header.hidden = true;
+      paragraph.hidden = true;
+      const oldImageDiv2 = document.getElementById("projects");
+      if (oldImageDiv2) oldImageDiv2.remove();
+      break;
+    }
+case 10: {
+  header.hidden = false;
+  paragraph.hidden = false;
+
+  header.textContent = "Contact Me";
+  header.style.color = "#FFD6A0"; // Warm cream-gold like Jupiter's bands
+  header.style.backgroundColor = "rgba(80, 30, 0, 0.7)"; // Deep reddish-brown overlay
+
+  paragraph.textContent = "Reach out and start a conversion:";
+  paragraph.style.color = "#FFD6A0";
+  paragraph.style.backgroundColor = "rgba(80, 30, 0, 0.7)";
+
+  const button = document.createElement("button");
+  button.textContent = "Email Me";
+  button.className = "contactButtonJupiter";
+  button.id = "contactbutton";
+  button.onclick = () => {
+    window.location.href = "mailto:jacob.w.chambliss@gmail.com"; 
+  };
+
+  button.style.position = "absolute";
+  button.style.paddingTop = "10px";
+  button.style.top = "71%";
+  button.style.left = "50%";
+  button.style.transform = "translate(-50%, -50%)";
+  button.style.zIndex = "1002";
+
+  document.getElementById("solarSystem").appendChild(button);
+  break;
+}
+
+    case 11: {
+      header.hidden = true;
+      paragraph.hidden = true;
+      break;
+    }
+    case 12: {
+      header.hidden = false;
+      paragraph.hidden = false; 
+        header.style.color = "#FFF8E1"; 
+        paragraph.style.color = "#FFF8E1"; // Off-white text
+        paragraph.style.backgroundColor = "rgba(100, 80, 40, 0.7)"; // Brownish transparent bg
+        break;
+    }
+    case 13: {
+      header.hidden = true;
+      paragraph.hidden = true;
+      break;
+    }
+    case 14: {
+      header.hidden = false;
+      paragraph.hidden = false; 
+      header.style.backgroundColor = "rgb(25, 25, 112)";
+        header.style.color = "#C4F0F0"; 
+        paragraph.style.color = "#C4F0F0"; // Pale cyan text
+        paragraph.style.backgroundColor = "rgba(20, 50, 50, 0.6)"; // Dark teal transparent bg
+        const buttt = document.getElementById("contactbutton");
+        if (buttt) {
+          buttt.style.background = "linear-gradient(135deg,rgb(0, 0, 139), rgb(72, 61, 139))";
+        }
+        break;
+    }
+    case 15: {
+      header.hidden = true;
+      paragraph.hidden = true;
+      break;
+    }
+    case 16: {
+      header.hidden = false;
+      paragraph.hidden = false; 
+        header.style.color = "#B0D9FF";
+        paragraph.style.color = "#B0D9FF"; // Light blue text
+        const buttt = document.getElementById("contactbutton");
+        if (buttt) {
+          buttt.style.background = "linear-gradient(135deg,rgb(0, 0, 139), rgb(72, 61, 139))";
+        }
+        paragraph.style.backgroundColor = "rgba(0, 0, 80, 0.7)"; // Deep navy transparent bg
+        break;
+    }
+    case 17: {
+      header.hidden = true;
+      paragraph.hidden = true;
+      break;
+    }
+    case 18: {
+      header.hidden = false;
+      paragraph.hidden = false; 
+        header.style.color = "#D3D3D3";
+        paragraph.style.color = "#D3D3D3"; // Light gray text
+        const buttt = document.getElementById("contactbutton");
+        if (buttt) {
+          buttt.style.background = "linear-gradient(135deg,rgb(50,50,50), rgba(50,50,50,.7))";
+        }
+        header.style.backgroundColor = "rgba(50, 50, 50, 0.7)"; // Dark gray transparent bg
+        paragraph.style.backgroundColor = "rgba(50, 50, 50, 0.7)"; // Dark gray transparent bg
+        break;
+    }
+    case 19: {
+      header.hidden = true;
+      paragraph.hidden = true;
+      const oldImageDiv2 = document.getElementById("contactbutton");
+      if (oldImageDiv2) oldImageDiv2.remove();
+      break;
+    }
+}
+
 }
